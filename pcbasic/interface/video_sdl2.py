@@ -611,7 +611,7 @@ class VideoSDL2(VideoPlugin):
                 )
             elif event.button.button == sdl2.SDL_BUTTON_MIDDLE:
                 # MIDDLE button: paste
-                text = self._clipboard_handler.paste(mouse=True)
+                text = self._clipboard_handler.paste()
                 self._clipboard_interface.paste(text)
             self.busy = True
         if event.button.button == sdl2.SDL_BUTTON_LEFT:
@@ -622,7 +622,7 @@ class VideoSDL2(VideoPlugin):
         """Handle mouse-up event."""
         self._input_queue.put(signals.Event(signals.PEN_UP))
         if self._mouse_clip and event.button.button == sdl2.SDL_BUTTON_LEFT:
-            self._clipboard_interface.copy(mouse=True)
+            self._clipboard_interface.copy()
             self._clipboard_interface.stop()
             self.busy = True
 
