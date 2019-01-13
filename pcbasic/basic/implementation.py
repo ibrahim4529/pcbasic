@@ -2,7 +2,7 @@
 PC-BASIC - implementation.py
 Top-level implementation and main interpreter loop
 
-(c) 2013--2018 Rob Hagemans
+(c) 2013--2019 Rob Hagemans
 This file is released under the GNU GPL version 3 or later.
 """
 import io
@@ -54,7 +54,7 @@ class Implementation(object):
             self, syntax=u'advanced', double=False, term=u'', shell=u'',
             output_streams=sys.stdout, input_streams=sys.stdin,
             codepage=None, box_protect=True, font=None, text_width=80,
-            video=u'cga', monitor=u'rgb', aspect_ratio=(4, 3), low_intensity=False,
+            video=u'cga', monitor=u'rgb', aspect_ratio=(4, 3),
             devices=None, current_device=u'Z:', mount=None,
             textfile_encoding=None, soft_linefeed=False,
             keys=u'', check_keybuffer_full=True, ctrl_c_is_break=True,
@@ -127,7 +127,7 @@ class Implementation(object):
             self.queues, self.values, self.queues,
             self.memory, text_width, video_memory, video, monitor,
             self.sound, self.io_streams,
-            low_intensity, aspect_ratio,
+            aspect_ratio,
             self.codepage, font
         )
         self.screen = self.display.text_screen
