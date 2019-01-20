@@ -2,7 +2,7 @@
 PC-BASIC - audio_sdl2.py
 Sound interface based on SDL2
 
-(c) 2015--2018 Rob Hagemans
+(c) 2015--2019 Rob Hagemans
 This file is released under the GNU GPL version 3 or later.
 """
 
@@ -16,6 +16,8 @@ try:
     from . import sdl2
 except ImportError:
     sdl2 = None
+
+from ..compat import zip
 
 from .audio import AudioPlugin
 from .base import audio_plugins, InitFailed
@@ -124,18 +126,15 @@ class AudioSDL2(AudioPlugin):
 
     def _get_next_chunk(self, notused, stream, length_bytes):
         """Callback function to generate the next chunk to be played."""
-        length = length_bytes
-        samples = [self.samples[voice][:length] for voice in range(4)]
-        self.samples = [self.samples[voice][length:] for voice in range(4)]
+        # this assumes 8-bit samples
         # if samples have run out, add silence
-        samples = [
-            _samp.rjust(length, b'\0') if len(_samp) < length else _samp
-            for _samp in samples
-        ]
-        # mix the samples by averaging
-        mixed = bytearray(
-            sum(_b) for _b in zip(*samples)
+        samples = (
+            _samp.rjust(length_bytes, b'\0') if len(_samp) < length_bytes else _samp[:length_bytes]
+            for _samp in self.samples
         )
+        # mix the samples
+        mixed = bytearray(sum(_b) for _b in zip(*samples))
+        self.samples = [_samp[length_bytes:] for _samp in self.samples]
         ctypes.memmove(
-            stream, (ctypes.c_char * length_bytes).from_buffer(mixed[:length_bytes]), length_bytes
+            stream, (ctypes.c_char * length_bytes).from_buffer(mixed), length_bytes
         )
